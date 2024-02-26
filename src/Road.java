@@ -1,4 +1,4 @@
-import
+
 public class Road {
     private final City source;
     private final City destination;
@@ -7,7 +7,6 @@ public class Road {
     public Road(City source, City destination, double distance) {
         this.source = source;
         this.destination = destination;
-
 
     }
 
