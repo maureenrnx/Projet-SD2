@@ -24,3 +24,4 @@ public class City {
         return Objects.hash(id);
     }
 }
+
