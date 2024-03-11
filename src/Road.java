@@ -2,7 +2,6 @@ import java.util.Objects;
 
 
 public class Road {
-
     private  City source;
     private  City destination;
     private double distance;
@@ -11,9 +10,7 @@ public class Road {
         this.source = source;
         this.destination = destination;
         this.distance = Util.distance(source.getLatitude(),source.getLongitude(),destination.getLatitude(),destination.getLongitude());
-
     }
-
 
     public City getSource() {
         return source;

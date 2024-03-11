@@ -5,96 +5,100 @@ import java.io.IOException;
 import java.util.*;
 
 public class Graph {
-    public Map<Integer, City> correspondanceIndiceCity;
-    public Map<City, Integer> correspondanceCityInteger;
-    public Road[][] matrice = new Road[0][0];
+    private Map<City, Set<Road>> outputRoad;
+    private Map<Integer, City> correspondanceIndiceCity;
     public int nbCity = 0;
 
-
     public Graph(File cities, File roads) {
-        correspondanceCityInteger = new HashMap<City, Integer>();
-        correspondanceIndiceCity = new HashMap<Integer, City>();
+        outputRoad = new HashMap<City, Set<Road>>();
     }
 
     protected void ajouterSommet(City c) {
-        correspondanceIndiceCity.put(nbCity, c);
-        correspondanceCityInteger.put(c, nbCity);
-        nbCity++;
-        Road[][] matrx = new Road[nbCity][nbCity];
-        for (int i = 0; i < nbCity; i++) {
-            for (int j = 0; i < nbCity; j++) {
-                matrx[i][j] = matrice[i][j];
-            }
-        }
-        matrice = matrx;
+        outputRoad.put(c, new HashSet<>());
     }
 
     public boolean sontAdjacents(City c1, City c2) {
-        // ils sont adjacents donc c' est dans les 2 sens
-        // il faut vérifier s' ils sont nulls
-        //
-        return matrice[correspondanceCityInteger.get(c1)][correspondanceCityInteger.get(c2)] != null ||
-                matrice[correspondanceCityInteger.get(c2)][correspondanceCityInteger.get(c1)] != null;
+        for(Road road : outputRoad.get(c1)){
+            if(road.getDestination().equals(c2)){
+                return true;
+            }
+        }
+        for(Road road : outputRoad.get(c2)){
+            if(road.getDestination().equals(c1)){
+                return true;
+            }
+        }
+        return false;
     }
 
-    protected void ajouterArc(Road r) {
-        int i = correspondanceCityInteger.get(r.getSource());
-        int j = correspondanceCityInteger.get(r.getDestination());
-        matrice[i][j] = r;
+    public void ajouterArc(Road r) {
+        Set<Road> s = outputRoad.get(r.getSource());
+        s.add(r);
     }
 
     public Set<Road> arcSortants(City c1) {
-        Set<Road> res = new HashSet<>();
-        for (int i = 0; i < matrice.length; i++) {
-            if (matrice[correspondanceCityInteger.get(c1)][i] != null){
-                res.add(matrice[correspondanceCityInteger.get(c1)][i]);
-            }
-        }
-
-
-
-    public void calculerItineraireMinimisantNombreRoutes() {
-
-        }
+        return outputRoad.get(c1);
     }
 
-    }
-
-    public void calculerItineraireMinimisantNombreRoutes(String berlin, String madrid) {
-        
+    //BFS
+    public void calculerItineraireMinimisantNombreRoutes(String c1, String c2) {
+        City city1 = correspondanceIndiceCity.get()
+        for(Road road : arcSortants(c1))
     }
 
 
-    public void calculerItineraireMinimisantKm(String berlin, String madrid) {
-    }
-    public void calculerItineraireMinimisantNombreRoutes(String berlin, String madrid) {
+    //Dijkstra
+    public void calculerItineraireMinimisantKm(String c1, String c2) {
+
     }
 
-    public void readFile(File file){
-        try
-        {
+    public void readCities(File file) {
+        try {
             String line;
-           // ArrayList<String> data= new ArrayList<>();
+            // ArrayList<String> data= new ArrayList<>();
+            FileReader reader = new FileReader(file);
+            BufferedReader br = new BufferedReader(reader);
+a
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+
+                int id = Integer.parseInt(parts[0]);
+                String name = parts[1];
+                double latitude = Double.parseDouble(parts[2]);
+                double longitude = Double.parseDouble(parts[3]);
+
+                City city = new City(id, name, latitude, longitude);
+                correspondanceIndiceCity.put(id,city);
+
+                Set<Road> routesSortantes = new HashSet<Road>();
+                outputRoad.put(city,routesSortantes);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.getMessage();
+        }
+    }
+    
+    public void readRoads(File file){
+        try {
+            String line;
+            // ArrayList<String> data= new ArrayList<>();
             FileReader reader = new FileReader(file);
 
             BufferedReader br = new BufferedReader(reader);
 
-            while((line = br.readLine()) != null)
-            {
+            while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
-                for(String part: parts){
-                    System.out.println(part);
-                }
 
+                City sourceCity = correspondanceIndiceCity.get(Integer.parseInt(parts[0]));
+                City destinationCity = correspondanceIndiceCity.get(Integer.parseInt(parts[1]));
+
+                Road road = new Road(sourceCity, destinationCity);
+                outputRoad.get(sourceCity).add(road);
             }
             reader.close();
-
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             e.getMessage();
         }
     }
-
-
 }
