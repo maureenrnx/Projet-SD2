@@ -28,25 +28,9 @@ public class Road {
         this.destination = destination;
     }
 
-    public double getDistance() {
-        return distance;
-    }
 
-    public void setDistance(double distance) {
-        this.distance = distance;
-    }
+    
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Road road)) return false;
-        return Double.compare(distance, road.distance) == 0 && Objects.equals(source, road.source) && Objects.equals(destination, road.destination);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(source, destination, distance);
-    }
 }
 
