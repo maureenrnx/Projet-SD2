@@ -7,12 +7,13 @@ public class Road {
     private  City destination;
     private double distance;
 
-    public Road(City source, City destination, double distance) {
+    public Road(City source, City destination) {
         this.source = source;
         this.destination = destination;
         this.distance = Util.distance(source.getLatitude(),source.getLongitude(),destination.getLatitude(),destination.getLongitude());
 
     }
+
 
     public City getSource() {
         return source;
@@ -34,11 +35,6 @@ public class Road {
         return distance;
     }
 
-    public void setDistance(double distance) {
-        this.distance = distance;
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -51,4 +47,3 @@ public class Road {
         return Objects.hash(source, destination, distance);
     }
 }
-
