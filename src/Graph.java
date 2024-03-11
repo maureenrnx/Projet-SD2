@@ -7,6 +7,7 @@ import java.util.*;
 public class Graph {
     private Map<City, Set<Road>> outputRoad;
     private Map<Integer, City> correspondanceIndiceCity;
+    private Map<String, City> correspondanceNameCity;
     public int nbCity = 0;
 
     public Graph(File cities, File roads) {
@@ -23,6 +24,7 @@ public class Graph {
                 return true;
             }
         }
+
         for(Road road : outputRoad.get(c2)){
             if(road.getDestination().equals(c1)){
                 return true;
@@ -42,8 +44,42 @@ public class Graph {
 
     //BFS
     public void calculerItineraireMinimisantNombreRoutes(String c1, String c2) {
-        City city1 = correspondanceIndiceCity.get()
-        for(Road road : arcSortants(c1))
+        City city1 = correspondanceNameCity.get(c1);
+        City city2 = correspondanceNameCity.get(c2);
+
+        for(Road road : arcSortants(city1)){
+            if(road.getDestination().equals(city2)){
+                System.out.println(road.getDistance());
+            }
+        }
+
+        /*
+        City baladeur = new city ( ... )
+
+        Arraylist file = new Arraylist() // Les sommets parcourru en retirant ceux choisi
+
+        ? pourquoi on utilise une file
+
+        // voir si c'est mieux hashSet ou hashMap
+
+        HashMap retiens tt les sommets parcourru  -> liste ou set
+
+        HashMap retiens la ville et la route par laquel on est passe
+        Key -> City
+        Value -> arcSortants
+
+        while(baladeur != null){
+
+        file.add(sommet);
+
+        if(baladeur == city2){
+
+        }
+
+
+        }        * */
+
+
     }
 
 
@@ -58,7 +94,7 @@ public class Graph {
             // ArrayList<String> data= new ArrayList<>();
             FileReader reader = new FileReader(file);
             BufferedReader br = new BufferedReader(reader);
-a
+
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(" ");
 
@@ -69,6 +105,8 @@ a
 
                 City city = new City(id, name, latitude, longitude);
                 correspondanceIndiceCity.put(id,city);
+                correspondanceNameCity.put(name,city);
+                nbCity++;
 
                 Set<Road> routesSortantes = new HashSet<Road>();
                 outputRoad.put(city,routesSortantes);
@@ -92,6 +130,7 @@ a
 
                 City sourceCity = correspondanceIndiceCity.get(Integer.parseInt(parts[0]));
                 City destinationCity = correspondanceIndiceCity.get(Integer.parseInt(parts[1]));
+                // ajouter nom dans correspondanceNameCity
 
                 Road road = new Road(sourceCity, destinationCity);
                 outputRoad.get(sourceCity).add(road);
