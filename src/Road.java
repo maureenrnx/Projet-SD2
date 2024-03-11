@@ -28,10 +28,6 @@ public class Road {
         this.destination = destination;
     }
 
-    public double getDistance() {
-        return distance;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -43,4 +39,12 @@ public class Road {
     public int hashCode() {
         return Objects.hash(source, destination, distance);
     }
+
+
+
 }
+
+
+
+
+
