@@ -56,9 +56,9 @@ public class Graph {
         /*
         City baladeur = new city ( ... )
 
-        Arraylist file = new Arraylist() // Les sommets parcourru en retirant ceux choisi
+        Arraylist file = new Arraylist() // Les sommets parcourus en retirant les sommets choisis
 
-        ? pourquoi on utilise une file
+        Pourquoi utilise-t-on une file ?
 
         // voir si c'est mieux hashSet ou hashMap
 
