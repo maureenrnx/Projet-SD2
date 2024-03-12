@@ -12,6 +12,8 @@ public class Graph {
 
     public Graph(File cities, File roads) {
         outputRoad = new HashMap<City, Set<Road>>();
+        correspondanceIndiceCity = new HashMap<Integer, City>();
+        correspondanceNameCity = new HashMap<String,City>();
     }
 
     protected void ajouterSommet(City c) {
@@ -75,11 +77,7 @@ public class Graph {
         if(baladeur == city2){
 
         }
-
-
-        }        * */
-
-
+        */
     }
 
 
@@ -96,7 +94,7 @@ public class Graph {
             BufferedReader br = new BufferedReader(reader);
 
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split(" ");
+                String[] parts = line.split(",");
 
                 int id = Integer.parseInt(parts[0]);
                 String name = parts[1];
@@ -122,11 +120,10 @@ public class Graph {
             String line;
             // ArrayList<String> data= new ArrayList<>();
             FileReader reader = new FileReader(file);
-
             BufferedReader br = new BufferedReader(reader);
 
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split(" ");
+                String[] parts = line.split(",");
 
                 City sourceCity = correspondanceIndiceCity.get(Integer.parseInt(parts[0]));
                 City destinationCity = correspondanceIndiceCity.get(Integer.parseInt(parts[1]));
