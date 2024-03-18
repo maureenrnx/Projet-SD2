@@ -1,6 +1,5 @@
 import java.util.Objects;
 
-
 public class Road {
     private City source;
     private City destination;
