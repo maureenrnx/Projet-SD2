@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class Graph {
@@ -13,31 +14,34 @@ public class Graph {
     public Graph(File cities, File roads) {
         outputRoad = new HashMap<City, Set<Road>>();
         correspondanceIndiceCity = new HashMap<Integer, City>();
-        correspondanceNameCity = new HashMap<String,City>();
+        correspondanceNameCity = new HashMap<String, City>();
     }
 
     protected void ajouterSommet(City c) {
         outputRoad.put(c, new HashSet<>());
-    }
-
-    public boolean sontAdjacents(City c1, City c2) {
-        for(Road road : outputRoad.get(c1)){
-            if(road.getDestination().equals(c2)){
-                return true;
-            }
-        }
-
-        for(Road road : outputRoad.get(c2)){
-            if(road.getDestination().equals(c1)){
-                return true;
-            }
-        }
-        return false;
+        correspondanceIndiceCity.put(c.getId(), c);
+        correspondanceNameCity.put(c.getName(), c);
+        nbCity++;
     }
 
     public void ajouterArc(Road r) {
         Set<Road> s = outputRoad.get(r.getSource());
         s.add(r);
+    }
+
+    public boolean sontAdjacents(City c1, City c2) {
+        for (Road road : outputRoad.get(c1)) {
+            if (road.getDestination().equals(c2)) {
+                return true;
+            }
+        }
+
+        for (Road road : outputRoad.get(c2)) {
+            if (road.getDestination().equals(c1)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Set<Road> arcSortants(City c1) {
@@ -49,37 +53,57 @@ public class Graph {
         City city1 = correspondanceNameCity.get(c1);
         City city2 = correspondanceNameCity.get(c2);
 
-        for(Road road : arcSortants(city1)){
-            if(road.getDestination().equals(city2)){
-                System.out.println(road.getDistance());
+        if (city1 == null || city2 == null) {
+            System.out.println("Villes non trouvées dans le graphe.");
+            return;
+        }
+
+        Queue<City> fileDeSommets = new LinkedList<>();
+        Map<City, Road> predecesseurs = new HashMap<>();
+
+        fileDeSommets.offer(city1);
+
+        while (!fileDeSommets.isEmpty()) {
+            City baladeur = fileDeSommets.poll();
+
+            for (Road r : arcSortants(baladeur)) {
+                City voisin = r.getDestination();
+
+                if (!predecesseurs.containsKey(voisin)) {
+                    fileDeSommets.offer(voisin);
+                    predecesseurs.put(voisin, r);
+                }
             }
         }
 
-        /*
-        City baladeur = new city ( ... )
-
-        Arraylist file = new Arraylist() // Les sommets parcourus en retirant les sommets choisis
-
-        Pourquoi utilise-t-on une file ?
-
-        // voir si c'est mieux hashSet ou hashMap
-
-        HashMap retiens tt les sommets parcourru  -> liste ou set
-
-        HashMap retiens la ville et la route par laquel on est passe
-        Key -> City
-        Value -> arcSortants
-
-        while(baladeur != null){
-
-        file.add(sommet);
-
-        if(baladeur == city2){
-
+        if (!predecesseurs.containsKey(city2)) {
+            System.out.println("Aucun chemin trouvé entre " + c1 + " et " + c2);
+            return;
         }
-        */
-    }
 
+        LinkedList<Road> chemin = new LinkedList<>();
+        double distanceTotale = 0;
+        City baladeur = city2;
+
+        while (baladeur != null) {
+            Road road = predecesseurs.get(baladeur);
+            if (baladeur == city1) {
+                break;
+            }
+            if (road != null) {
+                chemin.addFirst(road);
+                distanceTotale += road.getDistance();
+                baladeur = road.getSource();
+            } else {
+                baladeur = null;
+            }
+        }
+
+        System.out.println("Itinéraire de " + c1 + " à " + c2 + ": " + chemin.size() + " routes et " + String.format("%.2f", distanceTotale) + " km");
+        for (Road road : chemin) {
+            System.out.println(road.getSource().getName() + " -> " + road.getDestination().getName() + "(" + String.format("%.2f", road.getDistance()) + " km)");
+        }
+    }
 
     //Dijkstra
     public void calculerItineraireMinimisantKm(String c1, String c2) {
@@ -102,20 +126,16 @@ public class Graph {
                 double longitude = Double.parseDouble(parts[3]);
 
                 City city = new City(id, name, latitude, longitude);
-                correspondanceIndiceCity.put(id,city);
-                correspondanceNameCity.put(name,city);
-                nbCity++;
 
-                Set<Road> routesSortantes = new HashSet<Road>();
-                outputRoad.put(city,routesSortantes);
+                ajouterSommet(city);
             }
             reader.close();
         } catch (IOException e) {
             e.getMessage();
         }
     }
-    
-    public void readRoads(File file){
+
+    public void readRoads(File file) {
         try {
             String line;
             // ArrayList<String> data= new ArrayList<>();
@@ -127,10 +147,11 @@ public class Graph {
 
                 City sourceCity = correspondanceIndiceCity.get(Integer.parseInt(parts[0]));
                 City destinationCity = correspondanceIndiceCity.get(Integer.parseInt(parts[1]));
-                // ajouter nom dans correspondanceNameCity
 
-                Road road = new Road(sourceCity, destinationCity);
-                outputRoad.get(sourceCity).add(road);
+                Road road1 = new Road(sourceCity, destinationCity);
+                Road road2 = new Road(destinationCity, sourceCity);
+                ajouterArc(road1);
+                ajouterArc(road2);
             }
             reader.close();
         } catch (IOException e) {
